@@ -13,3 +13,7 @@ Route::post('/chatbot/chat', [ChatbotController::class, 'chat'])->name('chatbot.
 Route::get('/chatbot/history', [ChatbotController::class, 'history'])->name('chatbot.history');
 Route::post('/chatbot/clear', [ChatbotController::class, 'clear'])->name('chatbot.clear');
 Route::get('/chatbot/health', [ChatbotController::class, 'healthCheck'])->name('chatbot.health');
+
+Route::get("/simple-test", function() {
+    return "Hello from Laravel - Simple Test!";
+});

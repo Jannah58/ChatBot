@@ -51,6 +51,10 @@ RUN echo '#!/bin/bash\n\
 # Generate application key if not exists\n\
 if [ ! -f /var/www/html/.env ]; then\n\
     cp /var/www/html/.env.example /var/www/html/.env\n\
+fi\n\
+\n\
+# Generate app key if it does not exist\n\
+if ! grep -q "APP_KEY=" /var/www/html/.env || grep -q "APP_KEY=$" /var/www/html/.env; then\n\
     php artisan key:generate\n\
 fi\n\
 \n\

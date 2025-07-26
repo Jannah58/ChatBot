@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # Ollama service (AI model)
   ollama:
@@ -40,7 +38,7 @@ services:
       dockerfile: Dockerfile
     container_name: gamma_laravel
     ports:
-      - "8080:8080"
+      - "8080:80"
     depends_on:
       - fastapi
     environment:
@@ -50,8 +48,6 @@ services:
     restart: unless-stopped
     networks:
       - gamma_network
-    volumes:
-      - ./gamma-laravel-frontend:/var/www/html
 
   # Nginx reverse proxy (optional, for production)
   nginx:
