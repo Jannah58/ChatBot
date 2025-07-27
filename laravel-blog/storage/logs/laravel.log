@@ -1,0 +1,23 @@
+[2025-07-27 01:44:38] laravel.EMERGENCY: Unable to create configured logger. Using emergency logger. {"exception":"[object] (InvalidArgumentException(code: 0): Log [] is not defined. at /workspace/laravel-blog/vendor/laravel/framework/src/Illuminate/Log/LogManager.php:212)
+[stacktrace]
+#0 /workspace/laravel-blog/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(137): Illuminate\\Log\\LogManager->resolve()
+#1 /workspace/laravel-blog/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(124): Illuminate\\Log\\LogManager->get()
+#2 /workspace/laravel-blog/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(681): Illuminate\\Log\\LogManager->driver()
+#3 /workspace/laravel-blog/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(317): Illuminate\\Log\\LogManager->error()
+#4 /workspace/laravel-blog/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(278): Illuminate\\Foundation\\Exceptions\\Handler->reportThrowable()
+#5 /workspace/laravel-blog/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(523): Illuminate\\Foundation\\Exceptions\\Handler->report()
+#6 /workspace/laravel-blog/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(203): Illuminate\\Foundation\\Console\\Kernel->reportException()
+#7 /workspace/laravel-blog/artisan(34): Illuminate\\Foundation\\Console\\Kernel->handle()
+#8 {main}
+"} 
+[2025-07-27 01:44:38] laravel.ERROR: The "" directory does not exist. {"exception":"[object] (Symfony\\Component\\Finder\\Exception\\DirectoryNotFoundException(code: 0): The \"\" directory does not exist. at /workspace/laravel-blog/vendor/symfony/finder/Finder.php:649)
+[stacktrace]
+#0 /workspace/laravel-blog/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php(86): Symfony\\Component\\Finder\\Finder->in()
+#1 /workspace/laravel-blog/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php(63): Illuminate\\Foundation\\Bootstrap\\LoadConfiguration->getConfigurationFiles()
+#2 /workspace/laravel-blog/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php(39): Illuminate\\Foundation\\Bootstrap\\LoadConfiguration->loadConfigurationFiles()
+#3 /workspace/laravel-blog/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(286): Illuminate\\Foundation\\Bootstrap\\LoadConfiguration->bootstrap()
+#4 /workspace/laravel-blog/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(447): Illuminate\\Foundation\\Application->bootstrapWith()
+#5 /workspace/laravel-blog/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(199): Illuminate\\Foundation\\Console\\Kernel->bootstrap()
+#6 /workspace/laravel-blog/artisan(34): Illuminate\\Foundation\\Console\\Kernel->handle()
+#7 {main}
+"} 
