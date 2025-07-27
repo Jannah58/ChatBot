@@ -1,3 +1,4 @@
+# Use PHP with FPM
 FROM php:8.2-fpm-alpine
 
 # Install system dependencies
@@ -28,7 +29,7 @@ RUN docker-php-ext-install \
     gd \
     bcmath
 
-# Install Composer
+# Copy composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Install Node.js and npm
@@ -37,49 +38,48 @@ RUN apk add --no-cache nodejs npm
 # Set working directory
 WORKDIR /var/www/html
 
-# Copy composer files first for better caching
+# Copy composer files
 COPY composer.json composer.lock ./
 
-# Install PHP dependencies (if composer files exist)
+# Install PHP dependencies
 RUN if [ -f composer.json ]; then composer install --no-dev --optimize-autoloader --no-scripts; fi
 
-# Copy package.json files for npm dependencies
+# Copy package files
 COPY package*.json ./
 
-# Install Node.js dependencies (if package.json exists)
+# Install Node dependencies
 RUN if [ -f package.json ]; then npm ci --only=production; fi
 
-# Copy application code
+# Copy application files
 COPY . .
 
-# Copy nginx configuration
+# Copy Nginx configuration
 COPY docker/nginx.conf /etc/nginx/nginx.conf
 
 # Copy supervisor configuration
 COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+# Create log directories for supervisor
+RUN mkdir -p /var/log/supervisor
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html/storage \
     && chmod -R 755 /var/www/html/bootstrap/cache
 
-# Create Laravel directories if they don't exist
+# Create storage directories
 RUN mkdir -p storage/logs storage/framework/cache storage/framework/sessions storage/framework/views \
     && chown -R www-data:www-data storage bootstrap/cache
 
-# Copy environment file
-COPY .env.example .env
+# Create a simple .env file
+RUN echo "APP_NAME=Laravel" > .env \
+    && echo "APP_ENV=local" >> .env \
+    && echo "APP_KEY=base64:YourRandomGeneratedKeyHere=" >> .env \
+    && echo "APP_DEBUG=true" >> .env \
+    && echo "APP_URL=http://localhost" >> .env
 
-# Generate application key and run setup if composer.json exists
-RUN if [ -f composer.json ]; then \
-        php artisan key:generate && \
-        php artisan config:cache && \
-        php artisan view:cache; \
-    fi
-
-# Build assets if package.json exists
-RUN if [ -f package.json ]; then npm run build; fi
-
+# Expose port
 EXPOSE 80
 
+# Start supervisor
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
