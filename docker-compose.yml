@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # Laravel Application
   laravel:
@@ -17,7 +15,6 @@ services:
     environment:
       - APP_ENV=local
       - APP_DEBUG=true
-      - DB_CONNECTION=sqlite
       - CHATBOT_API_URL=http://chatbot:8000
     depends_on:
       - chatbot

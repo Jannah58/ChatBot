@@ -16,14 +16,11 @@ RUN apk add --no-cache \
     curl \
     oniguruma-dev \
     nginx \
-    supervisor \
-    sqlite
+    supervisor
 
 # Install PHP extensions
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg
 RUN docker-php-ext-install \
-    pdo_mysql \
-    pdo_sqlite \
     mbstring \
     zip \
     exif \
@@ -64,16 +61,10 @@ COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 # Create log directories for supervisor
 RUN mkdir -p /var/log/supervisor
 
-# Create storage directories and SQLite database
-RUN mkdir -p storage/logs storage/framework/cache storage/framework/sessions storage/framework/views database \
-    && touch database/database.sqlite \
-    && chown -R www-data:www-data storage bootstrap/cache database \
-    && chmod -R 755 storage bootstrap/cache \
-    && chmod 664 database/database.sqlite
-
-# Generate application key and run migrations
-RUN php artisan key:generate --force \
-    && php artisan migrate --force
+# Create storage directories
+RUN mkdir -p storage/logs storage/framework/cache storage/framework/sessions storage/framework/views bootstrap/cache \
+    && chown -R www-data:www-data storage bootstrap/cache \
+    && chmod -R 755 storage bootstrap/cache
 
 # Expose port
 EXPOSE 80
