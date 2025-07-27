@@ -16,12 +16,14 @@ RUN apk add --no-cache \
     curl \
     oniguruma-dev \
     nginx \
-    supervisor
+    supervisor \
+    sqlite
 
 # Install PHP extensions
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg
 RUN docker-php-ext-install \
     pdo_mysql \
+    pdo_sqlite \
     mbstring \
     zip \
     exif \
@@ -62,21 +64,16 @@ COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 # Create log directories for supervisor
 RUN mkdir -p /var/log/supervisor
 
-# Set permissions
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html/storage \
-    && chmod -R 755 /var/www/html/bootstrap/cache
+# Create storage directories and SQLite database
+RUN mkdir -p storage/logs storage/framework/cache storage/framework/sessions storage/framework/views database \
+    && touch database/database.sqlite \
+    && chown -R www-data:www-data storage bootstrap/cache database \
+    && chmod -R 755 storage bootstrap/cache \
+    && chmod 664 database/database.sqlite
 
-# Create storage directories
-RUN mkdir -p storage/logs storage/framework/cache storage/framework/sessions storage/framework/views \
-    && chown -R www-data:www-data storage bootstrap/cache
-
-# Create a simple .env file
-RUN echo "APP_NAME=Laravel" > .env \
-    && echo "APP_ENV=local" >> .env \
-    && echo "APP_KEY=base64:YourRandomGeneratedKeyHere=" >> .env \
-    && echo "APP_DEBUG=true" >> .env \
-    && echo "APP_URL=http://localhost" >> .env
+# Generate application key and run migrations
+RUN php artisan key:generate --force \
+    && php artisan migrate --force
 
 # Expose port
 EXPOSE 80

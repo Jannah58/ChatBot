@@ -6,7 +6,7 @@ services:
     build:
       context: ./laravel-blog
       dockerfile: Dockerfile
-    container_name: laravel-blog-app
+    container_name: laravel-app
     restart: unless-stopped
     ports:
       - "80:80"
@@ -17,54 +17,17 @@ services:
     environment:
       - APP_ENV=local
       - APP_DEBUG=true
-      - DB_HOST=mysql
-      - DB_DATABASE=laravel_blog
-      - DB_USERNAME=laravel
-      - DB_PASSWORD=laravel_password
+      - DB_CONNECTION=sqlite
       - CHATBOT_API_URL=http://chatbot:8000
     depends_on:
-      - mysql
       - chatbot
     networks:
-      - laravel-network
-
-  # MySQL Database
-  mysql:
-    image: mysql:8.0
-    container_name: laravel-blog-mysql
-    restart: unless-stopped
-    ports:
-      - "3306:3306"
-    environment:
-      MYSQL_DATABASE: laravel_blog
-      MYSQL_USER: laravel
-      MYSQL_PASSWORD: laravel_password
-      MYSQL_ROOT_PASSWORD: root_password
-    volumes:
-      - mysql_data:/var/lib/mysql
-    networks:
-      - laravel-network
-
-  # PHPMyAdmin for database management
-  phpmyadmin:
-    image: phpmyadmin:latest
-    container_name: laravel-blog-phpmyadmin
-    restart: unless-stopped
-    ports:
-      - "8080:80"
-    environment:
-      PMA_HOST: mysql
-      PMA_USER: laravel
-      PMA_PASSWORD: laravel_password
-    depends_on:
-      - mysql
-    networks:
-      - laravel-network
+      - app-network
 
   # Ollama AI Model Service
   ollama:
     build: ./ollama
-    container_name: laravel-blog-ollama
+    container_name: ollama
     volumes:
       - ollama_models:/root/.ollama
     ports:
@@ -72,12 +35,12 @@ services:
     restart: unless-stopped
     tty: true
     networks:
-      - laravel-network
+      - app-network
 
   # AI Chatbot FastAPI Service
   chatbot:
     build: ./chatbot
-    container_name: laravel-blog-chatbot
+    container_name: chatbot
     depends_on:
       - ollama
     ports:
@@ -88,36 +51,11 @@ services:
       - OLLAMA_HOST=http://ollama:11434
     restart: unless-stopped
     networks:
-      - laravel-network
-
-  # Redis for caching and sessions
-  redis:
-    image: redis:7-alpine
-    container_name: laravel-blog-redis
-    restart: unless-stopped
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis_data:/data
-    networks:
-      - laravel-network
-
-  # Mailpit for email testing
-  mailpit:
-    image: axllent/mailpit
-    container_name: laravel-blog-mailpit
-    restart: unless-stopped
-    ports:
-      - "1025:1025"
-      - "8025:8025"
-    networks:
-      - laravel-network
+      - app-network
 
 volumes:
-  mysql_data:
-  redis_data:
   ollama_models:
 
 networks:
-  laravel-network:
+  app-network:
     driver: bridge
