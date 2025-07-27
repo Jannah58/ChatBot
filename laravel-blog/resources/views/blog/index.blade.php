@@ -124,14 +124,7 @@
                 @endforeach
             </div>
 
-            <!-- Pagination -->
-            @if($posts->hasPages())
-                <div class="row">
-                    <div class="col-12 d-flex justify-content-center">
-                        {{ $posts->links() }}
-                    </div>
-                </div>
-            @endif
+
         @else
             <div class="row">
                 <div class="col-12 text-center">

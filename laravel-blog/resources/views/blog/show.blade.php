@@ -69,12 +69,6 @@
             <!-- Navigation -->
             <div class="row mt-5">
                 <div class="col-md-6">
-                    @php
-                        $previousPost = \App\Models\Post::published()
-                            ->where('published_at', '<', $post->published_at)
-                            ->orderBy('published_at', 'desc')
-                            ->first();
-                    @endphp
                     @if($previousPost)
                         <a href="{{ route('blog.show', $previousPost->slug) }}" class="btn btn-outline-secondary w-100 text-start">
                             <i class="fas fa-chevron-left me-2"></i>
@@ -86,12 +80,6 @@
                     @endif
                 </div>
                 <div class="col-md-6 mt-3 mt-md-0">
-                    @php
-                        $nextPost = \App\Models\Post::published()
-                            ->where('published_at', '>', $post->published_at)
-                            ->orderBy('published_at', 'asc')
-                            ->first();
-                    @endphp
                     @if($nextPost)
                         <a href="{{ route('blog.show', $nextPost->slug) }}" class="btn btn-outline-secondary w-100 text-end">
                             <div>
@@ -109,14 +97,6 @@
         <div class="col-lg-4">
             <div class="position-sticky" style="top: 100px;">
                 <!-- Related Posts -->
-                @php
-                    $relatedPosts = \App\Models\Post::published()
-                        ->where('id', '!=', $post->id)
-                        ->orderBy('published_at', 'desc')
-                        ->limit(3)
-                        ->get();
-                @endphp
-
                 @if($relatedPosts->count() > 0)
                     <div class="card mb-4">
                         <div class="card-header">
